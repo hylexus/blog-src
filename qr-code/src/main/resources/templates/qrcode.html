@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>user list</title>
+
+<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.qrcode.min.js}"></script>
+</head>
+<body>
+	<div id="qrcode"></div>
+	<script type="text/javascript">
+		$(function() {
+			$('#qrcode').qrcode({
+				width : 300,
+				height : 300,
+				text : "size doesn't matter"
+			});
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+jedis:
+  host: 127.0.0.1
+  port: 6379
+  pool:
+    max-idle: 300
+    min-idle: 10
+    max-total: 600
+    max-wait: 1000
+    block-when-exhausted: true

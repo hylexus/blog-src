@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: user-service
+server:
+  port: 6667
+eureka:
+  client:
+    service-url:
+      defaultZone: http://h1:5555/eureka/,http:h2:5556/eureka/

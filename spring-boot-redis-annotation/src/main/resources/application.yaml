@@ -1,0 +1,11 @@
+spring:
+#  cache:
+#    type: redis
+#    cache-names:
+#      - cache-demo
+#      - cache-2
+  redis:
+    host: 127.0.0.1
+    password:
+    port: 6379
+

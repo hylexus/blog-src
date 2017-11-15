@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.hylexus.webcore.mapper.StationMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO station (name, lng, lat)
+        VALUES (#{name}, #{lng}, #{lat})
+    </insert>
+
+    <select id="getNearStation" resultType="cn.hylexus.webcore.po.StationPO">
+        SELECT
+            s.id,
+            s.name,
+            s.name,
+            s.lng,
+            s.lat,
+            ROUND(
+                    6378.138 * 2 * ASIN(
+                            SQRT(
+                                    POW(
+                                            SIN((${targetLat} * PI() / 180 - s.lat * PI() / 180) / 2), 2)
+                                    +
+                                    COS(${targetLat} * PI() / 180) * COS(s.lat * PI() / 180)
+                                    * POW(SIN((${targetLng} * PI() / 180 - s.lng * PI() / 180) / 2), 2)
+                            )
+                    ) * 1000
+            ) AS distance
+        FROM station s
+        WHERE
+            (s.lng BETWEEN ${lng1} AND ${lng2})
+            AND (s.lat BETWEEN ${lat1} AND ${lat2})
+        ORDER BY distance ASC, s.id
+        LIMIT ${start}, ${limit}
+    </select>
+</mapper>

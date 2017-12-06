@@ -17,11 +17,11 @@ public class DistanceUtils {
      * @return <lng1,lng2,lat1,lat2>
      */
     public static Tuple4<Double> calcBoxByDistFromPt(double lng, double lat, double radius) {
-        SpatialContext geo = SpatialContext.GEO;
-        Rectangle rectangle = geo.getDistCalc()//
+        SpatialContext context = SpatialContext.GEO;
+        Rectangle rectangle = context.getDistCalc()//
                 .calcBoxByDistFromPt(//
-                        geo.makePoint(lng, lat), //
-                        radius * com.spatial4j.core.distance.DistanceUtils.KM_TO_DEG, geo, null//
+                        context.makePoint(lng, lat), //
+                        radius * com.spatial4j.core.distance.DistanceUtils.KM_TO_DEG, context, null//
                 );
         return new Tuple4<>(rectangle.getMinX(), rectangle.getMaxX(), rectangle.getMinY(), rectangle.getMaxY());
     }

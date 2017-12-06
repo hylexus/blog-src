@@ -25,8 +25,9 @@ public class LocationServiceTest {
     public void testGetNearStations() {
 
 //        121.496107,31.264149
-        Double lng = 121.496107D;
-        Double lat = 31.264149;
+//        121.519095,31.175702
+        Double lng = 121.519095D;
+        Double lat = 31.175702;
         Integer radius = 5;
         this.locationService.getNearStations(lng, lat, radius, 1, 5)
                 .forEach(System.out::println);

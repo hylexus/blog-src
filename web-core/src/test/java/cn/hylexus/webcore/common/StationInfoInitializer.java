@@ -39,7 +39,7 @@ public class StationInfoInitializer {
     @Test
     public void initStationInfo() throws Exception {
         FileUtils
-                .readLines(new File(STATION_INFO_FILE_PATH), Charset.forName("UTF-8"))
+                .readLines(new File("/Users/hylexus/git-repo/mine/blog-src/web-core/src/main/resources/stations-shanghai.txt"), Charset.forName("UTF-8"))
                 .stream()
                 .filter(StringUtils::isNotBlank)
                 .map(line -> {

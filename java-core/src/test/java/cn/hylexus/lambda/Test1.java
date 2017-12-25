@@ -9,10 +9,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 import static java.util.stream.Collectors.*;
 import static java.util.Comparator.*;
@@ -212,5 +209,114 @@ public class Test1 {
             set.add(Characteristics.CONCURRENT);
             return Collections.unmodifiableSet(set);
         }
+    }
+
+    long sum(long n) {
+        return Stream.iterate(1L, i -> i + 1)
+                .limit(n)
+                .reduce(0L, Long::sum);
+    }
+
+    long rangedSum(long n) {
+        return LongStream.rangeClosed(1L, n)
+                .reduce(0L, Long::sum);
+    }
+
+    long parallelSum(long n) {
+        return Stream.iterate(1L, i -> i + 1)
+                .limit(n)
+                .parallel()
+                .reduce(0L, Long::sum);
+    }
+
+    long parallelRangedSum(long n) {
+        return LongStream.rangeClosed(1L, n)
+                .parallel()
+                .reduce(0L, Long::sum);
+    }
+
+    @Test
+    public void test3() {
+        long limit = 123456789L;
+        long duration = getDuration(this::sum, limit);
+        System.out.println(duration);
+        duration = getDuration(this::parallelSum, limit);
+        System.out.println(duration);
+    }
+
+    @Test
+    public void test5() {
+        long limit = 12345678910L;
+        long duration = 0;
+//        duration = getDuration(this::rangedSum, limit);
+//        System.out.println(duration);
+        duration = getDuration(this::parallelRangedSum, limit);
+        System.out.println(duration);
+    }
+
+    @Test
+    public void test4() {
+        System.out.println(Runtime.getRuntime().availableProcessors());
+    }
+
+    long getDuration(Function<Long, Long> adder, long n) {
+
+        long fastest = Long.MAX_VALUE;
+
+        for (int i = 0; i < 10; i++) {
+            long start = System.nanoTime();
+            long sum = adder.apply(n);
+            long duration = (System.nanoTime() - start) / 1_000_000;
+            System.out.println("result:" + sum);
+            if (duration < fastest) {
+                fastest = duration;
+            }
+        }
+
+        return fastest;
+    }
+
+    static class Accumulator {
+
+        long value = 0;
+
+        void accumelate(long n) {
+            value += n;
+        }
+    }
+
+    @Test
+    public void test6() {
+        Accumulator accumulator = new Accumulator();
+        long max = 10000;
+        LongStream.rangeClosed(1, max).forEach(accumulator::accumelate);
+        System.out.println(accumulator.value);
+
+        accumulator.value = 0;
+        LongStream.rangeClosed(1, max).parallel().forEach(accumulator::accumelate);
+        System.out.println(accumulator.value);
+    }
+
+    int wordCount(String str) {
+        int counter = 0;
+        boolean prevCharIsSpace = true;
+        for (Character c : str.toCharArray()) {
+            if (Character.isWhitespace(c)) {
+                prevCharIsSpace = true;
+                continue;
+            }
+            if (prevCharIsSpace) {
+                counter++;
+                prevCharIsSpace = false;
+            }
+        }
+
+        return counter;
+    }
+
+    @Test
+    public void test7() {
+        String s = "java c    c++ C# scala";
+        System.out.println(wordCount(s));
     }
 }

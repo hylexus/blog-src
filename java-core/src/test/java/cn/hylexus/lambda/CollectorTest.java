@@ -364,4 +364,105 @@ public class CollectorTest {
         System.out.println(map);
     }
 
+
+    static class CityInfo {
+        private Integer cityId;
+        private String cityName;
+        private Integer cityLevel;
+
+        public CityInfo(Integer cityId, String cityName, Integer cityLevel) {
+            this.cityId = cityId;
+            this.cityName = cityName;
+            this.cityLevel = cityLevel;
+        }
+
+        public Integer getCityId() {
+            return cityId;
+        }
+
+        public void setCityId(Integer cityId) {
+            this.cityId = cityId;
+        }
+
+        public String getCityName() {
+            return cityName;
+        }
+
+        public void setCityName(String cityName) {
+            this.cityName = cityName;
+        }
+
+        public Integer getCityLevel() {
+            return cityLevel;
+        }
+
+        public void setCityLevel(Integer cityLevel) {
+            this.cityLevel = cityLevel;
+        }
+
+        @Override
+        public String toString() {
+            return "CityInfo{" +
+                    "cityId=" + cityId +
+                    ", cityName='" + cityName + '\'' +
+                    ", cityLevel=" + cityLevel +
+                    '}';
+        }
+    }
+
+    List<CityInfo> cities = Lists.newArrayList(
+            new CityInfo(604, "北京", 1),
+            new CityInfo(605, "上海", 1),
+            new CityInfo(616, "西安", 2),
+            new CityInfo(622, "长沙", 2)
+    );
+
+    @Test
+    public void test3() {
+        Map<Integer, List<CityInfo>> groupByLevel = cities.stream().collect(Collectors.groupingBy(CityInfo::getCityLevel));
+        printCity(groupByLevel);
+
+        groupByLevel = cities.stream().collect(Collectors.groupingBy(CityInfo::getCityLevel, Collectors.toList()));
+        printCity(groupByLevel);
+
+        Map<Integer, List<String>> collect = cities.stream().collect(
+                Collectors.groupingBy(
+                        CityInfo::getCityLevel,
+                        Collectors.mapping(
+                                CityInfo::getCityName, Collectors.toList()
+                        )
+                )
+        );
+
+        collect.forEach((k, v) -> {
+            System.out.println(k);
+            v.forEach(c -> System.out.println("\t" + c));
+            System.out.println("=================");
+        });
+
+        Map<Integer, CityInfo> collect1 = cities.stream().collect(
+                Collectors.groupingBy(
+                        CityInfo::getCityLevel,
+                        Collectors.collectingAndThen(
+                                Collectors.maxBy(
+                                        Comparator.comparing(CityInfo::getCityId,Comparator.reverseOrder())
+                                ),
+                                Optional::get
+                        ))
+
+        );
+
+        collect1.forEach((k, v) -> {
+            System.out.println(k);
+            System.out.println("\t" + v);
+        });
+    }
+
+    private void printCity(Map<Integer, List<CityInfo>> map) {
+        map.forEach((k, v) -> {
+            System.out.println(k);
+            v.forEach(c -> System.out.println("\t" + c));
+        });
+        System.out.println("=================");
+    }
 }

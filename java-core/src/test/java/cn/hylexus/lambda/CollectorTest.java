@@ -1,6 +1,7 @@
 package cn.hylexus.lambda;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.util.*;
@@ -445,7 +446,7 @@ public class CollectorTest {
                         CityInfo::getCityLevel,
                         Collectors.collectingAndThen(
                                 Collectors.maxBy(
-                                        Comparator.comparing(CityInfo::getCityId,Comparator.reverseOrder())
+                                        Comparator.comparing(CityInfo::getCityId, Comparator.reverseOrder())
                                 ),
                                 Optional::get
                         ))
@@ -464,5 +465,52 @@ public class CollectorTest {
             v.forEach(c -> System.out.println("\t" + c));
         });
         System.out.println("=================");
+    }
+
+    @Test
+    public void test5() {
+        String str = Lists.newArrayList("a", "B", "c", "d")
+                .stream().collect(new JoinClollector());
+        System.out.println(str);
+    }
+
+    static class JoinClollector implements Collector<String, StringBuilder, String> {
+
+        private String seperator = ",";
+
+        @Override
+        public Supplier<StringBuilder> supplier() {
+            return () -> new StringBuilder();
+        }
+
+        @Override
+        public BiConsumer<StringBuilder, String> accumulator() {
+            return (sb, r) -> {
+                if (StringUtils.isNotBlank(r)) {
+                    sb.append(r).append(seperator);
+                }
+            };
+        }
+
+        @Override
+        public BinaryOperator<StringBuilder> combiner() {
+            return (l, r) -> l.append(r);
+        }
+
+        @Override
+        public Function<StringBuilder, String> finisher() {
+            return c -> {
+                String ret = c.toString();
+                if (ret.endsWith(seperator)) {
+                    return ret.substring(0, ret.length() - 1);
+                }
+                return ret;
+            };
+        }
+
+        @Override
+        public Set<Characteristics> characteristics() {
+            return new HashSet<>();
+        }
     }
 }

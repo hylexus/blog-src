@@ -264,9 +264,21 @@ public class CollectorTest {
         }
     }
 
+    /**
+     * @param <K> 分组之后的key
+     * @param <T> 中间转换过程的元素类型
+     * @param <R> 最终的结果类型
+     * @author hylexus
+     */
     static class GroupByCollector3<K, T, R> implements Collector<T, Map<K, List<T>>, Map<K, List<R>>> {
 
+        /**
+         * 分类器，指定分组之后的key
+         */
         Function<T, K> classifier;
+        /**
+         * 最后一步的转换函数
+         */
         Function<T, R> finisher;
 
         public GroupByCollector3(Function<T, K> classifier, Function<T, R> finisher) {
@@ -306,7 +318,8 @@ public class CollectorTest {
                 Map<K, List<R>> ret = new HashMap<>();
 
                 map.entrySet().stream().forEach(e -> {
-                    List<R> v = e.getValue().stream().map(finisher).collect(Collectors.toList());
+                    List<R> v = e.getValue().stream().map(finisher)
+                            .collect(Collectors.toList());
                     ret.put(e.getKey(), v);
                 });
                 return ret;
@@ -334,7 +347,19 @@ public class CollectorTest {
         map = users.stream().collect(new GroupByCollector2<>(User::getGender));
         printUserMap(map);
 
-        Map<Integer, List<Integer>> collect = users.stream().collect(new GroupByCollector3<>(User::getGender, User::getId));
+        Map<Integer, List<Integer>> collect = users.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                User::getGender,
+                                Collectors.mapping(User::getId, Collectors.toList())
+                        )
+                );
+        collect.forEach((k, v) -> {
+            System.out.println(k);
+            System.out.println("\t" + v);
+        });
+
+        collect = users.stream().collect(new GroupByCollector3<>(User::getGender, User::getId));
         collect.forEach((k, v) -> {
             System.out.println(k);
             System.out.println("\t" + v);
@@ -344,7 +369,7 @@ public class CollectorTest {
     void printUserMap(Map<Integer, List<User>> map) {
         map.forEach((k, v) -> {
             System.out.println(k);
-            System.out.println("\t" + v);
+            v.forEach(e -> System.out.println("\t" + e));
         });
     }
 
@@ -470,7 +495,7 @@ public class CollectorTest {
     @Test
     public void test5() {
         String str = Lists.newArrayList("a", "B", "c", "d")
-                .stream().collect(new JoinClollector());
+                .stream().collect(new JoinClollector2());
         System.out.println(str);
     }
 
@@ -485,9 +510,9 @@ public class CollectorTest {
 
         @Override
         public BiConsumer<StringBuilder, String> accumulator() {
-            return (sb, r) -> {
-                if (StringUtils.isNotBlank(r)) {
-                    sb.append(r).append(seperator);
+            return (sb, str) -> {
+                if (StringUtils.isNotBlank(str)) {
+                    sb.append(str).append(seperator);
                 }
             };
         }
@@ -511,6 +536,46 @@ public class CollectorTest {
         @Override
         public Set<Characteristics> characteristics() {
             return new HashSet<>();
+        }
+    }
+
+    static class JoinClollector2 implements Collector<String, StringBuilder, String> {
+
+        private String seperator = ",";
+
+        @Override
+        public Supplier<StringBuilder> supplier() {
+            return StringBuilder::new;
+        }
+
+        @Override
+        public BiConsumer<StringBuilder, String> accumulator() {
+            return (sb, str) -> {
+                if (StringUtils.isNotBlank(str)) {
+                    sb.append(str).append(seperator);
+                }
+            };
+        }
+
+        @Override
+        public BinaryOperator<StringBuilder> combiner() {
+            return StringBuilder::append;
+        }
+
+        @Override
+        public Function<StringBuilder, String> finisher() {
+            return c -> {
+                String ret = c.toString();
+                if (ret.endsWith(seperator)) {
+                    return ret.substring(0, ret.length() - 1);
+                }
+                return ret;
+            };
+        }
+
+        @Override
+        public Set<Characteristics> characteristics() {
+            return Collections.emptySet();
         }
     }
 }

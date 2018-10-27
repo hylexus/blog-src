@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo-08</title>
+    <script type="text/javascript" src="../js/three.js"></script>
+    <script type="text/javascript" src="../js/OrbitControls.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+
+    <style>
+        #canvas-frame {
+            border: 1px solid blue;
+        }
+    </style>
+</head>
+<body>
+<div id="canvas-frame"></div>
+<script>
+    var w = window.innerWidth - 100;
+    var h = window.innerHeight - 100;
+
+    var camera = buildPerspectiveCamera(45, w, h, 1, 1000, {x: 600, y: 0, z: 600});
+    var scene = buildScene();
+    var renderer = buildRenderer(w, h);
+
+    function doRender() {
+        renderer.render(scene, camera);
+    }
+
+    doRender();
+
+    function animate() {
+        requestAnimationFrame(animate);
+        doRender();
+    }
+
+    animate();
+
+    document.body.appendChild(renderer.domElement);
+
+    var controller = new THREE.OrbitControls(camera);
+    controller.addEventListener('change', doRender);
+
+    var geometry = new THREE.CubeGeometry(200, 100, 50, 4, 4);
+    var material = new THREE.MeshLambertMaterial({color: 0xffffff});
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(0, 0, 0);
+    scene.add(mesh);
+    camera.lookAt(scene.position);
+
+    var light = new THREE.DirectionalLight(0xff0000, 1);
+    light.position.set(0, 0, 1000000);
+    scene.add(light);
+
+</script>
+</body>
+</html>

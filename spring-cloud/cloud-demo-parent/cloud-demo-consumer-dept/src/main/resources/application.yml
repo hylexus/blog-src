@@ -1,0 +1,19 @@
+server:
+  port: 9001
+spring:
+  application:
+    name: cloud-demo-consumer-dept
+eureka:
+  client:
+    service-url:
+#      defaultZone: http://localhost:7001/eureka
+      defaultZone: http://eureka-server-01:7001/eureka,http://eureka-server-02:7002/eureka,http://eureka-server-03:7003/eureka
+  instance:
+    instance-id: cloud-demo-consumer-dept-${server.port}
+    prefer-ip-address: true
+info:
+  app.name: $project.build.finalName$
+  company.name: org.spring
+  build.groudId: $project.groupId$
+  build.artifactId: $project.artifactId$
+  build.version: $project.version$

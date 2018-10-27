@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo-10</title>
+    <script type="text/javascript" src="../js/three.js"></script>
+    <script type="text/javascript" src="../js/OrbitControls.js"></script>
+    <script type="text/javascript" src="../js/stats.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+
+    <style>
+        #canvas-frame {
+            border: 1px solid blue;
+        }
+    </style>
+</head>
+<body>
+<div id="canvas-frame"></div>
+<script>
+    var w = window.innerWidth - 100;
+    var h = window.innerHeight - 100;
+
+    var camera = buildPerspectiveCamera(45, w, h, 1, 1000, {x: 300, y: 0, z: 600});
+    var scene = buildScene();
+    var renderer = buildRenderer(w, h);
+
+
+    var stat = new Stats();
+    stat.domElement.style.position = 'absolute';
+    stat.domElement.style.right = '0px';
+    stat.domElement.style.top = '0px';
+
+    document.body.appendChild(stat.domElement);
+
+
+    function doRender() {
+        stat.begin();
+        renderer.render(scene, camera);
+        stat.end();
+    }
+
+    doRender();
+
+    function animate() {
+        requestAnimationFrame(animate);
+        doRender();
+    }
+
+    animate();
+
+    document.body.appendChild(renderer.domElement);
+
+    var controller = new THREE.OrbitControls(camera);
+    controller.addEventListener('change', doRender);
+
+    var materials = [];
+
+    var loader = new THREE.TextureLoader();
+    for (var i = 0; i < 6; i++) {
+        loader.load(
+            './pic/number-0' + i + '.png',
+            function (texture) {
+                var material = new THREE.MeshBasicMaterial({
+                        overdraw: true,
+                        map: texture,
+                        side:THREE.DoubleSide
+                    }
+                );
+                materials.push(material);
+            }
+        );
+    }
+
+    var width = 200;
+    var cube = new THREE.Mesh(
+        new THREE.CubeGeometry(width, width, width),
+        materials
+    );
+
+    scene.add(cube);
+
+
+
+</script>
+</body>
+</html>

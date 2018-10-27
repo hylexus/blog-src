@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo-06</title>
+    <script type="text/javascript" src="../js/three.js"></script>
+    <script type="text/javascript" src="../js/OrbitControls.js"></script>
+</head>
+<body>
+<div id="canvas-frame"></div>
+<script>
+    var w = window.innerWidth - 100;
+    var h = window.innerHeight - 100;
+
+    function buildRender() {
+        var render = new THREE.WebGLRenderer({antialias: true});
+        render.setSize(w, h);
+        render.setClearColor(0xFFFFFF, 1.0);
+        return render;
+    }
+
+    function buildScene() {
+        return new THREE.Scene();
+    }
+
+    function buildCamera() {
+        var camera = new THREE.PerspectiveCamera(45, w / h, 1, 10000);
+        camera.position.x = 400;
+        camera.position.y = 320;
+        camera.position.z = 800;
+
+        camera.up.x = 0;
+        camera.up.x = 0;
+        camera.up.z = 1;
+        return camera;
+    }
+
+    var render = buildRender();
+    var scene = buildScene();
+
+
+    var light = new THREE.DirectionalLight(0xFF0000, 1.0, 0);
+    light.position.set(100, 100, 200);
+    scene.add(light);
+
+    var width = 250;
+    var step = 50;
+    var count = 10;
+
+    var geometry = new THREE.Geometry();
+    geometry.vertices.push(new THREE.Vector3(-width, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(width, 0, 0));
+
+    for (var i = 0; i <= count; i++) {
+        var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: 0x000000, opacity: 0.2}));
+        line.position.z = (i * step) - width;
+        scene.add(line);
+
+        line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: 0x000000, opacity: 0.2}));
+        line.position.x = (i * step) - width;
+        line.rotation.y = 90 * Math.PI / 180;
+        scene.add(line);
+    }
+
+
+    function createLine(x1, y1, z1, color1, x2, y2, z2, color2) {
+        var geometry = new THREE.Geometry();
+
+        geometry.vertices.push(new THREE.Vector3(x1, y1, z1));
+        geometry.vertices.push(new THREE.Vector3(x2, y2, z2));
+
+        geometry.colors.push(new THREE.Color(color1));
+        geometry.colors.push(new THREE.Color(color2));
+
+        var material = new THREE.LineBasicMaterial({
+            vertexColors: THREE.VertexColors
+        });
+        return new THREE.Line(geometry, material, THREE.LineSegments);
+    }
+
+    var base = w;
+    scene.add(createLine(-base, 0, 0, 0xff0000));
+    scene.add(createLine(base, 0, 0, 0xff0000));
+
+    scene.add(createLine(0, -base, 0, 0x00ff00));
+    scene.add(createLine(0, base, 0, 0x00ff00));
+
+    scene.add(createLine(0, 0, -base, 0x0000ff));
+    scene.add(createLine(0, 0, base, 0x0000ff));
+
+    document.body.appendChild(render.domElement);
+    var camera = buildCamera();
+    camera.lookAt(scene.position);
+
+    function doRender() {
+        render.render(scene, camera);
+    }
+
+    doRender();
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        camera.position.x += 1;
+        camera.position.z += 1;
+        camera.position.y += 1;
+        doRender();
+    }
+
+    animate();
+
+
+    var controller = new THREE.OrbitControls(camera);
+    controller.addEventListener('change', doRender);
+
+</script>
+</body>
+</html>

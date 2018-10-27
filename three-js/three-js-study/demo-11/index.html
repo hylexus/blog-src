@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo-10</title>
+    <script type="text/javascript" src="../js/three.js"></script>
+    <script type="text/javascript" src="../js/OrbitControls.js"></script>
+    <script type="text/javascript" src="../js/stats.min.js"></script>
+
+</head>
+<body>
+<div id="canvas-frame"></div>
+<script>
+    var requestAnimationFrame = window.requestAnimationFrame
+        || window.mozRequestAnimationFrame
+        || window.webkitRequestAnimationFrame
+        || window.msRequestAnimationFrame;
+    window.requestAnimationFrame = requestAnimationFrame;
+
+    var stat, renderer, id;
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+
+    var ballMesh;
+    var ballRadius = 0.5;
+    var isMoving = false;
+    var maxHeight = 5;
+    var v = 0;
+    var a = -0.01;
+
+    var scene = new THREE.Scene();
+
+    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(w, h);
+    renderer.setClearColor(0xffffff, 1.0);
+
+    var camera = new THREE.OrthographicCamera(-5, 5, 3.75, -3.75, 0.1, 100);
+    camera.position.set(5, 10, 30);
+    camera.lookAt(new THREE.Vector3(0, 3, 0));
+    scene.add(camera);
+
+    var light = new THREE.DirectionalLight(0xffffff);
+    light.position.set(10, 10, 15);
+    scene.add(light);
+
+    stat = new Stats();
+    stat.domElement.style.position = 'absolute';
+    stat.domElement.style.right = '0px';
+    stat.domElement.style.top = '0px';
+
+    document.body.appendChild(stat.domElement);
+    document.body.appendChild(renderer.domElement);
+
+
+    ballMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(ballRadius, 16, 8),
+        new THREE.MeshLambertMaterial({color: 0xffff00})
+    );
+    ballMesh.position.y = ballRadius;
+    scene.add(ballMesh);
+
+    function drop() {
+        isMoving = true;
+        ballMesh.position.y = maxHeight;
+        v = 0;
+    }
+
+    function stop() {
+        if (id != null) {
+            cancelAnimationFrame(id);
+            id = null;
+        }
+    }
+
+    function draw() {
+        stat.begin();
+
+        if (isMoving) {
+            ballMesh.position.y += v;
+            v += a;
+
+            if (ballMesh.position.y <= ballRadius) {
+                v = -v * 0.9;
+            }
+
+            if (Math.abs(v) < 0.001) {
+                isMoving = false;
+                ballMesh.position.y = ballRadius;
+            }
+        }
+
+        renderer.render(scene, camera);
+        id = requestAnimationFrame(draw);
+        stat.end();
+    }
+
+    function doRender() {
+        renderer.render(scene, camera);
+    }
+
+    drop();
+    draw();
+
+    var controller = new THREE.OrbitControls(camera);
+    controller.addEventListener('change', doRender);
+
+</script>
+</body>
+</html>

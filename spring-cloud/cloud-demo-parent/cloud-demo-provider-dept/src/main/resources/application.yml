@@ -1,0 +1,35 @@
+
+server:
+  port: 8001
+mybatis:
+  config-location: classpath:/mybatis/mybatis.cfg.xml
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  type-aliases-package: cn.hylexus.cloud.entity
+spring:
+  application:
+    name: cloud-demo-provider-dept
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: org.gjt.mm.mysql.Driver
+    url: jdbc:mysql://localhost:3306/cloudDemo01
+    username: root
+    password: root
+    dbcp2:
+      min-idle: 5
+      initial-size: 5
+      max-total: 5
+      max-wait-millis: 2000
+eureka:
+  client:
+    service-url:
+#      defaultZone: http://localhost:7001/eureka
+      defaultZone: http://eureka-server-01:7001/eureka,http://eureka-server-02:7002/eureka,http://eureka-server-03:7003/eureka
+  instance:
+    instance-id: cloud-demo-provider-dept-${server.port}
+    prefer-ip-address: true
+info:
+  app.name: $project.build.finalName$
+  company.name: org.spring
+  build.artifactId: $project.artifactId$
+  build.version: $project.version$
+

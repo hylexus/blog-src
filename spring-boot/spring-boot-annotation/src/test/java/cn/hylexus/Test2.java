@@ -1,5 +1,7 @@
 package cn.hylexus;
 
+import cn.hylexus.aop.MathCalculator;
+import cn.hylexus.config.BeanConfigAop;
 import cn.hylexus.config.BeanConfigLifeCycle;
 import cn.hylexus.config.BeanConfigPropertyValue;
 import org.junit.Test;
@@ -30,9 +32,17 @@ public class Test2 {
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         AnnotationConfigApplicationContext context = this.getContext(BeanConfigPropertyValue.class);
         Object bean = context.getBean("userEntity");
         System.out.println(bean);
     }
+
+    @Test
+    public void test3() {
+        AnnotationConfigApplicationContext context = this.getContext(BeanConfigAop.class);
+        MathCalculator bean = context.getBean(MathCalculator.class);
+        bean.div(2, 2);
+    }
+
 }

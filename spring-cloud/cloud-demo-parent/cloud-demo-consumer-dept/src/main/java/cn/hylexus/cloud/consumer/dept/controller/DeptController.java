@@ -21,13 +21,15 @@ public class DeptController {
     @Autowired
     private RestTemplate restTemplate;
 
+    private static String providerPrefix ="http://cloud-demo-provider-dept";
+
     @GetMapping("/{id}")
     public DeptEntity getById(@PathVariable("id") Long id) throws Exception {
-        return restTemplate.getForEntity("http://localhost:8001/dept/" + id, DeptEntity.class, id).getBody();
+        return restTemplate.getForEntity(providerPrefix +"/dept/" + id, DeptEntity.class, id).getBody();
     }
 
     @GetMapping("/all")
     public List<DeptEntity> getAll(){
-        return restTemplate.getForEntity("http://localhost:8001/dept/all",List.class).getBody();
+        return restTemplate.getForEntity(providerPrefix +"/dept/all",List.class).getBody();
     }
 }

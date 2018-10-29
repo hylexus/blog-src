@@ -5,15 +5,13 @@ spring:
     name: cloud-demo-eureka
 eureka:
   instance:
-#    hostname: localhost
-    hostname: eureka-server01
+    hostname: localhost
   client:
     # 不将自己作为服务注册到注册中心
     register-with-eureka: false
     # 自己就是注册中心，不用去检索服务
     fetch-registry: false
     service-url:
-#      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
-      defaultZone: http://eureka-server-01:7001/eureka,http://eureka-server-02:7002/eureka,http://eureka-server-03:7003/eureka
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
   server:
     enable-self-preservation: false # 是否启用自我保护机制

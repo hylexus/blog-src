@@ -1,0 +1,20 @@
+server:
+  port: 9527
+spring:
+  application:
+    name: zuul-gateway
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+  instance:
+    instance-id: zuul-gateway-${server.port}
+    prefer-ip-address: true
+zuul:
+  routes:
+    # http://127.0.0.1:9527/dept2/dept/2
+    # http://127.0.0.1:9527/cloud-demo-provider-dept/dept/2
+    dept.serviceId: cloud-demo-provider-dept
+    dept.path: /dept2/**
+  ignored-services: cloud-demo-provider-dept

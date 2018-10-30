@@ -10,6 +10,9 @@ eureka:
   instance:
     instance-id: cloud-demo-consumer-dept-${server.port}
     prefer-ip-address: true
+feign:
+  hystrix:
+    enabled: true
 info:
   app.name: $project.build.finalName$
   company.name: org.spring

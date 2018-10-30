@@ -4,10 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients(basePackages = {"cn.hylexus.cloud.service"})
+@EnableFeignClients(basePackages = {"cn.hylexus.cloud"})
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class CloudDemoConsumerDeptApplication {
 
     public static void main(String[] args) {

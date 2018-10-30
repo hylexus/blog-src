@@ -11,7 +11,8 @@ import java.util.List;
  * @author hylexus
  * createdAt 2018/10/29
  **/
-@FeignClient(value = "CLOUD-DEMO-PROVIDER-DEPT")
+//@FeignClient(value = "CLOUD-DEMO-PROVIDER-DEPT")
+@FeignClient(value = "CLOUD-DEMO-PROVIDER-DEPT", fallbackFactory = FeignDeptServiceFallbackFactory.class)
 public interface FeignDeptService {
 
     @GetMapping("/dept/list")

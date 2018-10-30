@@ -1,5 +1,7 @@
 package cn.hylexus.cloud.consumer.dept.config;
 
+import cn.hylexus.cloud.service.FeignDeptServiceFallbackFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -9,4 +11,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ContextConfig {
 
+    //TODO why? auto-configuration is not work ???
+    @Bean
+    public FeignDeptServiceFallbackFactory fallbackFactory(){
+        return new FeignDeptServiceFallbackFactory();
+    }
 }

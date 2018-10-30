@@ -12,6 +12,7 @@
         <module>cloud-demo-provider-dept</module>
         <module>cloud-demo-consumer-dept</module>
         <module>cloud-demo-eureka</module>
+        <module>cloud-demo-hystrix-dashboard</module>
     </modules>
     <packaging>pom</packaging>
 
